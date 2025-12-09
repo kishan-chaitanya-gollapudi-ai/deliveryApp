@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickBite - Food Delivery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .menu-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        .menu-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+
+        .menu-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .menu-item h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.2em;
+        }
+
+        .menu-item p {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .menu-item .price {
+            color: #f5576c;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .quantity-control button {
+            background: #667eea;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+
+        .quantity-control input {
+            width: 50px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .add-to-cart-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: opacity 0.3s;
+        }
+
+        .add-to-cart-btn:hover {
+            opacity: 0.9;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .cart-section, .payment-section, .tracking-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .cart-section h2, .payment-section h2, .tracking-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .cart-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-price {
+            color: #f5576c;
+            font-size: 0.9em;
+        }
+
+        .cart-item-remove {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+        }
+
+        .empty-cart {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+        }
+
+        .promo-section {
+            margin: 15px 0;
+        }
+
+        .promo-section input {
+            width: 70%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+
+        .promo-section button {
+            padding: 10px 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .promo-message {
+            margin-top: 8px;
+            font-size: 0.9em;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        .promo-success {
+            color: #28a745;
+            background: #d4edda;
+        }
+
+        .promo-error {
+            color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .cart-summary {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .summary-row.total {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            border-top: 2px solid #ddd;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .tip-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .tip-btn {
+            padding: 8px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tip-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .place-order-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: opacity 0.3s;
+        }
+
+        .place-order-btn:hover {
+            opacity: 0.9;
+        }
+
+        .place-order-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .tracking-steps {
+            margin-top: 20px;
+        }
+
+        .tracking-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            margin-right: 15px;
+            z-index: 1;
+        }
+
+        .step-icon.completed {
+            background: #28a745;
+        }
+
+        .step-icon.active {
+            background: #667eea;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .step-content h4 {
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .step-content p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .order-summary-box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .order-summary-box h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .order-summary-box p {
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍕 QuickBite Food Delivery</h1>
+            <p>Delicious food delivered to your doorstep in 30 minutes!</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Menu Section -->
+            <div class="menu-section">
+                <h2>Our Menu</h2>
+                <div class="menu-grid" id="menuGrid">
+                    <!-- Menu items will be dynamically generated -->
+                </div>
+            </div>
+
+            <!-- Sidebar (Cart, Payment, Tracking) -->
+            <div class="sidebar">
+                <!-- Cart Section -->
+                <div class="cart-section">
+                    <h2>🛒 Your Cart</h2>
+                    <div id="cartItems">
+                        <div class="empty-cart">Your cart is empty</div>
+                    </div>
+                    
+                    <!-- Promo Code Section -->
+                    <div class="promo-section">
+                        <input type="text" id="promoCode" placeholder="Enter promo code">
+                        <button onclick="applyPromo()">Apply</button>
+                        <div id="promoMessage"></div>
+                    </div>
+
+                    <!-- Cart Summary -->
+                    <div class="cart-summary hidden" id="cartSummary">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">$0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Delivery Fee:</span>
+                            <span id="deliveryFee">$0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tax (10%):</span>
+                            <span id="tax">$0.00</span>
+                        </div>
+                        <div class="summary-row" id="discountRow" style="display: none;">
+                            <span>Discount:</span>
+                            <span id="discount" style="color: #28a745;">-$0.00</span>
+                        </div>
+                        <div class="summary-row" id="tipRow" style="display: none;">
+                            <span>Tip:</span>
+                            <span id="tipAmount">$0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span id="total">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Section -->
+                <div class="payment-section">
+                    <h2>💳 Payment Details</h2>
+                    <form id="paymentForm">
+                        <div class="form-group">
+                            <label for="customerName">Full Name *</label>
+                            <input type="text" id="customerName" required>
+                            <div class="error-message" id="nameError">Name is required</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" required>
+                            <div class="error-message" id="emailError">Valid email is required</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" required>
+                            <div class="error-message" id="phoneError">Valid 10-digit phone is required</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">Delivery Address *</label>
+                            <input type="text" id="address" required>
+                            <div class="error-message" id="addressError">Address is required</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="paymentMethod">Payment Method *</label>
+                            <select id="paymentMethod">
+                                <option value="">Select payment method</option>
+                                <option value="credit">Credit Card</option>
+                                <option value="debit">Debit Card</option>
+                                <option value="upi">UPI</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" id="cardDetailsGroup">
+                            <label for="cardNumber">Card Number *</label>
+                            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                            <div class="error-message" id="cardError">Valid 16-digit card number is required</div>
+                        </div>
+                        
+                        <div class="form-group" id="cvvGroup">
+                            <label for="cvv">CVV *</label>
+                            <input type="text" id="cvv" placeholder="123" maxlength="3">
+                            <div class="error-message" id="cvvError">Valid 3-digit CVV is required</div>
+                        </div>
+                        
+                        <div class="form-group" id="expiryGroup">
+                            <label for="expiry">Expiry Date *</label>
+                            <input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
+                            <div class="error-message" id="expiryError">Valid expiry date is required</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tip for Delivery Partner</label>
+                            <div class="tip-options">
+                                <button type="button" class="tip-btn" onclick="selectTip(0)">No Tip</button>
+                                <button type="button" class="tip-btn" onclick="selectTip(2)">$2</button>
+                                <button type="button" class="tip-btn" onclick="selectTip(5)">$5</button>
+                                <button type="button" class="tip-btn" onclick="selectTip(10)">$10</button>
+                            </div>
+                        </div>
+
+                        <button type="button" class="place-order-btn" onclick="placeOrder()">Place Order</button>
+                    </form>
+                </div>
+
+                <!-- Order Tracking Section -->
+                <div class="tracking-section hidden" id="trackingSection">
+                    <h2>📦 Order Tracking</h2>
+                    
+                    <div class="order-summary-box">
+                        <h3>Order #<span id="orderNumber"></span></h3>
+                        <p><strong>Estimated Delivery:</strong> <span id="estimatedTime"></span></p>
+                        <p><strong>Total Paid:</strong> $<span id="paidAmount"></span></p>
+                    </div>
+
+                    <div class="tracking-steps" id="trackingSteps">
+                        <div class="tracking-step">
+                            <div class="step-icon completed" id="step1">✓</div>
+                            <div class="step-content">
+                                <h4>Order Placed</h4>
+                                <p>Your order has been received</p>
+                            </div>
+                        </div>
+                        <div class="tracking-step">
+                            <div class="step-icon" id="step2">2</div>
+                            <div class="step-content">
+                                <h4>Preparing</h4>
+                                <p>Restaurant is preparing your food</p>
+                            </div>
+                        </div>
+                        <div class="tracking-step">
+                            <div class="step-icon" id="step3">3</div>
+                            <div class="step-content">
+                                <h4>Out for Delivery</h4>
+                                <p>Your food is on the way</p>
+                            </div>
+                        </div>
+                        <div class="tracking-step">
+                            <div class="step-icon" id="step4">4</div>
+                            <div class="step-content">
+                                <h4>Delivered</h4>
+                                <p>Enjoy your meal!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Menu Data
+        const menuItems = [
+            {
+                id: 1,
+                name: "Margherita Pizza",
+                description: "Fresh tomatoes, mozzarella, basil",
+                price: 12.99,
+                image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&h=300&fit=crop"
+            },
+            {
+                id: 2,
+                name: "Chicken Burger",
+                description: "Grilled chicken with cheese & veggies",
+                price: 8.99,
+                image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop"
+            },
+            {
+                id: 3,
+                name: "Caesar Salad",
+                description: "Fresh romaine, parmesan, croutons",
+                price: 7.49,
+                image: "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400&h=300&fit=crop"
+            },
+            {
+                id: 4,
+                name: "Sushi Platter",
+                description: "12 pieces of assorted sushi",
+                price: 18.99,
+                image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400&h=300&fit=crop"
+            },
+            {
+                id: 5,
+                name: "Pasta Carbonara",
+                description: "Creamy pasta with bacon & parmesan",
+                price: 13.49,
+                image: "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=400&h=300&fit=crop"
+            },
+            {
+                id: 6,
+                name: "Tacos (3 pcs)",
+                description: "Beef tacos with salsa & guacamole",
+                price: 9.99,
+                image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&h=300&fit=crop"
+            }
+        ];
+
+        let cart = [];
+        let currentTip = 0;
+        let discountAmount = 0;
+        let promoApplied = false;
+        let subtotal = 0;  // BUG 4: Global variable that accumulates
+
+        // Initialize menu
+        function initMenu() {
+            const menuGrid = document.getElementById('menuGrid');
+            menuGrid.innerHTML = menuItems.map(item => `
+                <div class="menu-item">
+                    <img src="${item.image}" alt="${item.name}">
+                    <h3>${item.name}</h3>
+                    <p>${item.description}</p>
+                    <div class="price">$${item.price}</div>
+                    <div class="quantity-control">
+                        <button onclick="decreaseQuantity(${item.id})">-</button>
+                        <input type="number" id="qty-${item.id}" value="1" min="1" max="10">
+                        <button onclick="increaseQuantity(${item.id})">+</button>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="addToCart(${item.id})">Add to Cart</button>
+                </div>
+            `).join('');
+        }
+
+        // BUG 1: Quantity can go negative
+        function decreaseQuantity(itemId) {
+            const qtyInput = document.getElementById(`qty-${itemId}`);
+            qtyInput.value = parseInt(qtyInput.value) - 1;
+        }
+
+        // BUG 2: Quantity can exceed max limit (should be 10)
+        function increaseQuantity(itemId) {
+            const qtyInput = document.getElementById(`qty-${itemId}`);
+            qtyInput.value = parseInt(qtyInput.value) + 1;
+        }
+
+        function addToCart(itemId) {
+            const item = menuItems.find(m => m.id === itemId);
+            const qtyInput = document.getElementById(`qty-${itemId}`);
+            const quantity = parseInt(qtyInput.value);
+
+            // BUG 3: Doesn't check if quantity is valid before adding
+            const existingItem = cart.find(c => c.id === itemId);
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({
+                    ...item,
+                    quantity: quantity
+                });
+            }
+
+            updateCart();
+            qtyInput.value = 1;
+        }
+
+        function removeFromCart(itemId) {
+            cart = cart.filter(item => item.id !== itemId);
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById('cartItems');
+            const cartSummary = document.getElementById('cartSummary');
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<div class="empty-cart">Your cart is empty</div>';
+                cartSummary.classList.add('hidden');
+                return;
+            }
+
+            cartSummary.classList.remove('hidden');
+            cartItems.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name} x${item.quantity}</div>
+                        <div class="cart-item-price">$${(item.price * item.quantity).toFixed(2)}</div>
+                    </div>
+                    <button class="cart-item-remove" onclick="removeFromCart(${item.id})">Remove</button>
+                </div>
+            `).join('');
+
+            updateSummary();
+        }
+
+        function updateSummary() {
+            // BUG 4: Subtotal calculation error - doesn't reset to 0, accumulates on every update
+            // let subtotal = 0;  // This line is missing - subtotal is global and never reset!
+            cart.forEach(item => {
+                subtotal += item.price * item.quantity;
+            });
+
+            // BUG 5: Delivery fee logic error - free delivery should be for orders over $50, but it's set to $30
+            const deliveryFee = subtotal > 30 ? 0 : 5.99;
+            
+            // BUG 6: Tax calculation is wrong - should be 10% but calculating on subtotal + delivery
+            const tax = (subtotal + deliveryFee) * 0.10;
+
+            // BUG 7: Discount not properly subtracted from total
+            const total = subtotal + deliveryFee + tax + currentTip;
+
+            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('deliveryFee').textContent = `$${deliveryFee.toFixed(2)}`;
+            document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+
+            if (promoApplied) {
+                document.getElementById('discountRow').style.display = 'flex';
+                document.getElementById('discount').textContent = `-$${discountAmount.toFixed(2)}`;
+            }
+
+            if (currentTip > 0) {
+                document.getElementById('tipRow').style.display = 'flex';
+                document.getElementById('tipAmount').textContent = `$${currentTip.toFixed(2)}`;
+            }
+        }
+
+        // BUG 8: Promo code "SAVE20" should give 20% off but gives 20 dollars off
+        function applyPromo() {
+            const promoCode = document.getElementById('promoCode').value.toUpperCase();
+            const promoMessage = document.getElementById('promoMessage');
+
+            if (promoCode === 'SAVE20') {
+                discountAmount = 20;
+                promoApplied = true;
+                promoMessage.textContent = '✓ Promo code applied! $20 off';
+                promoMessage.className = 'promo-message promo-success';
+                updateSummary();
+            } else if (promoCode === 'FREESHIP') {
+                // BUG 9: FREESHIP promo doesn't actually make delivery free
+                promoMessage.textContent = '✓ Free shipping applied!';
+                promoMessage.className = 'promo-message promo-success';
+            } else {
+                promoMessage.textContent = '✗ Invalid promo code';
+                promoMessage.className = 'promo-message promo-error';
+            }
+        }
+
+        function selectTip(amount) {
+            currentTip = amount;
+            document.querySelectorAll('.tip-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            updateSummary();
+        }
+
+        function placeOrder() {
+            // BUG 10: Doesn't check if cart is empty before placing order
+            
+            // Validate form
+            let isValid = true;
+            
+            const name = document.getElementById('customerName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const paymentMethod = document.getElementById('paymentMethod').value;
+
+            // BUG 11: Name validation accepts numbers and special characters
+            if (name === '') {
+                document.getElementById('nameError').classList.add('show');
+                isValid = false;
+            } else {
+                document.getElementById('nameError').classList.remove('show');
+            }
+
+            // BUG 12: Email validation is too lenient - accepts "test@test" without domain extension
+            if (!email.includes('@')) {
+                document.getElementById('emailError').classList.add('show');
+                isValid = false;
+            } else {
+                document.getElementById('emailError').classList.remove('show');
+            }
+
+            // BUG 13: Phone validation accepts letters and special characters
+            if (phone.length < 10) {
+                document.getElementById('phoneError').classList.add('show');
+                isValid = false;
+            } else {
+                document.getElementById('phoneError').classList.remove('show');
+            }
+
+            // BUG 14: Address validation missing - accepts empty spaces
+            if (!address) {
+                document.getElementById('addressError').classList.add('show');
+                isValid = false;
+            } else {
+                document.getElementById('addressError').classList.remove('show');
+            }
+
+            // BUG 15: Doesn't validate if payment method is selected
+            if (paymentMethod === 'credit' || paymentMethod === 'debit') {
+                const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+                const cvv = document.getElementById('cvv').value;
+                const expiry = document.getElementById('expiry').value;
+
+                // BUG 16: Card number validation accepts less than 16 digits
+                if (cardNumber.length < 15) {
+                    document.getElementById('cardError').classList.add('show');
+                    isValid = false;
+                } else {
+                    document.getElementById('cardError').classList.remove('show');
+                }
+
+                // BUG 17: CVV validation accepts 2 digits (should be exactly 3)
+                if (cvv.length < 2) {
+                    document.getElementById('cvvError').classList.add('show');
+                    isValid = false;
+                } else {
+                    document.getElementById('cvvError').classList.remove('show');
+                }
+
+                // BUG 18: Expiry date validation doesn't check if date is in the past
+                if (!expiry.includes('/')) {
+                    document.getElementById('expiryError').classList.add('show');
+                    isValid = false;
+                } else {
+                    document.getElementById('expiryError').classList.remove('show');
+                }
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            // Process order
+            const orderNumber = Math.floor(100000 + Math.random() * 900000);
+            const total = document.getElementById('total').textContent.replace('$', '');
+            
+            // BUG 19: Estimated delivery time shows wrong calculation (adds current minutes instead of adding 30-45 mins)
+            const currentTime = new Date();
+            const deliveryTime = new Date(currentTime.getTime() + currentTime.getMinutes() * 60000);
+            
+            document.getElementById('orderNumber').textContent = orderNumber;
+            document.getElementById('estimatedTime').textContent = deliveryTime.toLocaleTimeString();
+            document.getElementById('paidAmount').textContent = total;
+
+            // Show tracking section
+            document.getElementById('trackingSection').classList.remove('hidden');
+
+            // Simulate order tracking
+            setTimeout(() => {
+                document.getElementById('step2').classList.add('active');
+                document.getElementById('step2').textContent = '✓';
+                setTimeout(() => {
+                    document.getElementById('step2').classList.remove('active');
+                    document.getElementById('step2').classList.add('completed');
+                    document.getElementById('step3').classList.add('active');
+                    document.getElementById('step3').textContent = '✓';
+                    setTimeout(() => {
+                        document.getElementById('step3').classList.remove('active');
+                        document.getElementById('step3').classList.add('completed');
+                        document.getElementById('step4').classList.add('active');
+                        document.getElementById('step4').textContent = '✓';
+                        // BUG 20: Order tracking shows "Delivered" before the estimated time has passed
+                        setTimeout(() => {
+                            document.getElementById('step4').classList.remove('active');
+                            document.getElementById('step4').classList.add('completed');
+                        }, 2000);
+                    }, 3000);
+                }, 3000);
+            }, 3000);
+
+            alert('Order placed successfully! Order #' + orderNumber);
+        }
+
+        // Show/hide card fields based on payment method
+        document.getElementById('paymentMethod').addEventListener('change', function() {
+            const cardGroup = document.getElementById('cardDetailsGroup');
+            const cvvGroup = document.getElementById('cvvGroup');
+            const expiryGroup = document.getElementById('expiryGroup');
+            
+            if (this.value === 'credit' || this.value === 'debit') {
+                cardGroup.style.display = 'block';
+                cvvGroup.style.display = 'block';
+                expiryGroup.style.display = 'block';
+            } else {
+                cardGroup.style.display = 'none';
+                cvvGroup.style.display = 'none';
+                expiryGroup.style.display = 'none';
+            }
+        });
+
+        // Initialize
+        initMenu();
+    </script>
+</body>
+</html>
+
